@@ -33,20 +33,18 @@ fi
 source ./noia/bin/activate
 pip3 install srv6-tracert ansible jq >/dev/null 2>/dev/null
 
+
+if [ -z "`ip -6 addr | grep global`" ]; then
+echo -e "${RED}Your host has no IPv6 configured, exiting${NC}"
+
+else
+echo -e "${GREEN}Your IPv6 address is: `ip -6 addr | grep global`${NC}"
 echo -e "-${GREEN}-- Gathering host facts ---${NC}"
 ansible localhost -m setup -t . >/dev/null 2>/dev/null
 cat localhost | python3 -m json.tool > `hostname`.json
-
-if [ -z "`ip -6 addr | grep global`" ]; then
-echo -e "${RED}No IPv6 configured, skipping traceroute${NC}"
-touch `hostname`.noip6
-else
-echo -e "${GREEN}Your IPv6 address is: `ip -6 addr | grep global`${NC}"
 echo -e "${GREEN}--- Gathering traceroute ---"${NC}
 srv6_traceroute.py -d 2a03:b0c0:3:e0::107:4001 > `hostname`.traceroute
-fi
-
-deactivate
+rm -rf localhost
 zip `hostname`.zip `hostname`.* >/dev/null 2>/dev/null
 echo -e "\r\n"
 echo -e "${BLUE} -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=${NC}"
@@ -54,4 +52,7 @@ echo -e "-${GREEN}-- Done. Please send file ${RED}`hostname`.zip ${GREEN} to ${R
 echo -e "${BLUE} -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=${NC}"
 echo -e "\r\n"
 echo -e "\r\n"
+fi
+
+deactivate
 
