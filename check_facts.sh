@@ -6,12 +6,17 @@ BLUE='\033[1;34m'
 NC='\033[0m' # No Color
 
 echo -e "-${GREEN}-- Installing packages ---${NC}"
+
 if [ -f /etc/lsb-release ]; then
 apt-get -y install python3-pip zip >/dev/null 2>/dev/null
-fi
 
-if [ -f /etc/redhat-release ]; then
+elif [ -f /etc/redhat-release ]; then
 yum install python3-pip zip -y >/dev/null 2>/dev/null
+
+else
+echo -e "${RED} Your OS is not compatible"
+exit
+
 fi
 
 echo -e "-${GREEN}-- Installing virtualenv ---${NC}"
