@@ -17,7 +17,7 @@ fi
 echo -e "-${GREEN}-- Installing virtualenv ---${NC}"
 
 pip3 install virtualenv >/dev/null 2>/dev/null
-virtualenv -p python3 noia >/dev/null 2>/dev/null
+`which virtualenv` -p python3 noia >/dev/null 2>/dev/null
 source ./noia/bin/activate
 pip3 install ansible >/dev/null 2>/dev/null
 pip3 install srv6-tracert >/dev/null 2>/dev/null
